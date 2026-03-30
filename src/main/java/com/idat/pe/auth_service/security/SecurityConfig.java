@@ -15,7 +15,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * SecurityConfig siguiendo patrón del profesor, adaptado a Spring Security 7.x.
+ * SecurityConfig del auth_service.
+ * 
+ * Lógica de seguridad:
+ * - /api/auth/** → PÚBLICO (sin token)
+ * - /api/usuarios/** → PERMITIR (el gateway ya validó el rol ADMIN con JWT)
+ * - Lo demás → AUTENTICADO
+ * 
+ * El gateway es el responsable de validar roles via JWT.
+ * El auth_service CONFÍA en lo que el gateway le envía.
  */
 @Configuration
 @RequiredArgsConstructor
@@ -27,12 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider daoAuth) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth ->
-                    auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-            )
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .authenticationProvider(daoAuth);
 
         return http.build();

@@ -43,11 +43,7 @@ public class DetalleUsuarioService implements UserDetailsService {
         return getUserSecurity(usuario, getAuthorities(roles));
     }
 
-    /**
-     * Patrón del profesor: convierte lista de nombres de roles en GrantedAuthority.
-     * SI los roles NO tienen prefijo "ROLE_", lo agrega automáticamente.
-     * Por ejemplo: "ADMIN" → "ROLE_ADMIN"
-     */
+    
     public List<GrantedAuthority> getAuthorities(List<String> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String rol : roles) {

@@ -24,11 +24,12 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    @GetMapping
+    @GetMapping({"", "/"})
     public ResponseEntity<GenericResponse<List<UsuarioResponse>>> listar() {
         GenericResponse<List<UsuarioResponse>> response;
         try {
             List<UsuarioResponse> usuarios = usuarioService.listarUsuarios();
+            
             if (usuarios.isEmpty()) {
                 response = GenericResponse.<List<UsuarioResponse>>builder()
                         .errorMessage(ErrorMessage.builder()

@@ -92,7 +92,9 @@ public class AuthController {
 
             // 3. Convierte roles a GrantedAuthority y genera token
             List<GrantedAuthority> authorities = detalleUsuarioService.getAuthorities(roles);
-            System.out.println("5. Authorities convertidas, generando token...");
+            System.out.println("5. Authorities convertidas: " + 
+                authorities.stream().map(GrantedAuthority::getAuthority).toList());
+            System.out.println("5b. Generando token...");
             
             String token = jwtService.generateToken(usuario, authorities);
             System.out.println("6. Token generado exitosamente");
