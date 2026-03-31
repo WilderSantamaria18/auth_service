@@ -7,15 +7,16 @@ import com.idat.pe.auth_service.service.impl.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 /**
- * HU-09: Consulta de usuarios registrados.
- * Acceso restringido a ROLE_ADMIN — el api-gateway valida el rol del JWT.
- * GET /api/usuarios
+ * HU-09: Consulta de usuarios registrados - PROTEGIDO PARA ROLE_ADMIN
+ * T-010: Implementación de autorización en endpoint
+ * GET /api/usuarios → Solo ROLE_ADMIN
  */
 @RequiredArgsConstructor
 @RequestMapping("/api/usuarios")
@@ -24,6 +25,7 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping({"", "/"})
     public ResponseEntity<GenericResponse<List<UsuarioResponse>>> listar() {
         GenericResponse<List<UsuarioResponse>> response;
