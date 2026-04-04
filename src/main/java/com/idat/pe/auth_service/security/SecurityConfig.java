@@ -46,7 +46,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
+                .requestMatchers("/api/usuarios/**").authenticated()
                 .anyRequest().authenticated()
             )
             .authenticationProvider(daoAuth)

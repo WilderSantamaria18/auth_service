@@ -58,4 +58,9 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable Integer id) {
+        return ResponseEntity.ok(usuarioService.obtenerPorId(id));
+    }
 }

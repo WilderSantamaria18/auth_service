@@ -78,14 +78,25 @@ public class UsuarioService implements IUsuarioService {
     @Override
     public List<UsuarioResponse> listarUsuarios() {
         return usuarioRepository.findAll().stream()
-                .map(u -> new UsuarioResponse(
-                        u.getId(),
-                        u.getNombre(),
-                        u.getEmail(),
-                        u.getRoles().stream()
-                                .map(Rol::getNombre)
-                                .collect(Collectors.toSet())
-                ))
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public UsuarioResponse obtenerPorId(Integer id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+        return mapToResponse(usuario);
+    }
+
+    private UsuarioResponse mapToResponse(Usuario u) {
+        return new UsuarioResponse(
+                u.getId(),
+                u.getNombre(),
+                u.getEmail(),
+                u.getRoles().stream()
+                        .map(Rol::getNombre)
+                        .collect(Collectors.toSet())
+        );
     }
 }

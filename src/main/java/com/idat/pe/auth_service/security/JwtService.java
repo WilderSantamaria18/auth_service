@@ -43,8 +43,8 @@ public class JwtService implements IJwtService {
     @Override
     public String generateToken(Usuario usuario, List<GrantedAuthority> authorities) {
         return Jwts.builder()
-                .id(usuario.getId().toString())           // claim: id del usuario
                 .subject(usuario.getEmail())              // claim: email como subject
+                .claim("id", usuario.getId())             // NUEVO claim: id como número (Integer)
                 .claim("nombre", usuario.getNombre())     // claim: nombre para mostrar
                 .claim("authorities",                     // claim: lista de roles
                         authorities.stream()

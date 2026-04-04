@@ -20,4 +20,7 @@ public interface IUsuarioService {
 
     // HU-09: Lista todos los usuarios (acceso ADMIN via gateway)
     List<UsuarioResponse> listarUsuarios();
+
+    // NUEVO: Obtener usuario por ID (usado por Feign para validación entre microservicios)
+    UsuarioResponse obtenerPorId(Integer id);
 }
