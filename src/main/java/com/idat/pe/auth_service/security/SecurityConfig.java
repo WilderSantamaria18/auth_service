@@ -17,16 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * SecurityConfig del auth_service.
- * 
- * Lógica de seguridad (CORREGIDA - Sprint T-003):
- * - /api/auth/** → PÚBLICO (sin token)
- * - /api/usuarios/** → PROTEGIDO (requiere ROLE_ADMIN + JWT válido)
- * - Lo demás → AUTENTICADO
- * 
- * Se ha registrado FiltroJwtAuth para validar tokens internamente.
- */
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
@@ -41,16 +31,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider daoAuth, FiltroJwtAuth filtroJwt) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider daoAuth,
+            FiltroJwtAuth filtroJwt) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/usuarios/**").authenticated()
-                .anyRequest().authenticated()
-            )
-            .authenticationProvider(daoAuth)
-            .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/usuarios/**").authenticated()
+                        .anyRequest().authenticated())
+                .authenticationProvider(daoAuth)
+                .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -65,10 +55,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Patrón del profesor: Constructor con UserDetailsService.
-     * Inyectamos UserDetailsService como parámetro.
-     */
     @Bean
     public AuthenticationProvider daoAuth(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider dao = new DaoAuthenticationProvider();

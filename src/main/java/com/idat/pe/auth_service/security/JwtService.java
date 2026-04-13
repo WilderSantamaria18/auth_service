@@ -18,21 +18,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Implementacion del servicio JWT.
- *
- * IMPORTANTE: Solo GENERA tokens (HU-02).
- * La VALIDACION de tokens se hace en el app-gateway mediante FiltroJwtAuth.
- * La clave secreta (jwt.secret) debe ser identica en auth-service y app-gateway.
- */
 @Service
 public class JwtService implements IJwtService {
 
-    // Lee la clave secreta desde application.properties
     @Value("${jwt.secret}")
     private String secret;
 
-    // Lee el tiempo de expiracion desde application.properties (en ms)
     @Value("${jwt.expiration}")
     private long expiration;
 
@@ -43,10 +34,10 @@ public class JwtService implements IJwtService {
     @Override
     public String generateToken(Usuario usuario, List<GrantedAuthority> authorities) {
         return Jwts.builder()
-                .subject(usuario.getEmail())              // claim: email como subject
-                .claim("id", usuario.getId())             // NUEVO claim: id como número (Integer)
-                .claim("nombre", usuario.getNombre())     // claim: nombre para mostrar
-                .claim("authorities",                     // claim: lista de roles
+                .subject(usuario.getEmail()) // claim: email como subject
+                .claim("id", usuario.getId()) // NUEVO claim: id como número (Integer)
+                .claim("nombre", usuario.getNombre()) // claim: nombre para mostrar
+                .claim("authorities", // claim: lista de roles
                         authorities.stream()
                                 .map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
@@ -92,8 +83,7 @@ public class JwtService implements IJwtService {
                 null,
                 roles.stream()
                         .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList())
-        );
+                        .collect(Collectors.toList()));
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }
