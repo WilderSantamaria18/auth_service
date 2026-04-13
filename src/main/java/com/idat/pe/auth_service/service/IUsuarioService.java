@@ -23,4 +23,10 @@ public interface IUsuarioService {
 
     // NUEVO: Obtener usuario por ID (usado por Feign para validación entre microservicios)
     UsuarioResponse obtenerPorId(Integer id);
+
+    // NUEVO: Actualizar contraseña
+    void actualizarPassword(Integer id, com.idat.pe.auth_service.dto.UpdatePasswordRequest request);
+
+    // NUEVO: Actualizar datos de perfil (nombre y email)
+    void actualizarDatos(Integer id, com.idat.pe.auth_service.dto.UpdateUsuarioRequest request);
 }

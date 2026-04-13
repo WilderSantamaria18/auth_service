@@ -89,6 +89,36 @@ public class UsuarioService implements IUsuarioService {
         return mapToResponse(usuario);
     }
 
+    @Override
+    public void actualizarPassword(Integer id, com.idat.pe.auth_service.dto.UpdatePasswordRequest request) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), usuario.getPassword())) {
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+
+        usuario.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public void actualizarDatos(Integer id, com.idat.pe.auth_service.dto.UpdateUsuarioRequest request) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Si el email cambia, validar que no exista ya
+        if (!usuario.getEmail().equals(request.getEmail())) {
+            if (usuarioRepository.existsByEmail(request.getEmail())) {
+                throw new RuntimeException("El nuevo correo ya está en uso por otro usuario");
+            }
+            usuario.setEmail(request.getEmail());
+        }
+
+        usuario.setNombre(request.getNombre());
+        usuarioRepository.save(usuario);
+    }
+
     private UsuarioResponse mapToResponse(Usuario u) {
         return new UsuarioResponse(
                 u.getId(),

@@ -63,4 +63,46 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponse> obtenerPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(usuarioService.obtenerPorId(id));
     }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<GenericResponse<String>> actualizarPassword(
+            @PathVariable Integer id,
+            @RequestBody com.idat.pe.auth_service.dto.UpdatePasswordRequest request) {
+        try {
+            usuarioService.actualizarPassword(id, request);
+            return ResponseEntity.ok(GenericResponse.<String>builder()
+                    .response("Contraseña actualizada exitosamente")
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(GenericResponse.<String>builder()
+                            .errorMessage(ErrorMessage.builder()
+                                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                                    .dateError(LocalDate.now())
+                                    .message(e.getMessage())
+                                    .build())
+                            .build());
+        }
+    }
+
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<GenericResponse<String>> actualizarPerfil(
+            @PathVariable Integer id,
+            @RequestBody com.idat.pe.auth_service.dto.UpdateUsuarioRequest request) {
+        try {
+            usuarioService.actualizarDatos(id, request);
+            return ResponseEntity.ok(GenericResponse.<String>builder()
+                    .response("Perfil actualizado correctamente")
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(GenericResponse.<String>builder()
+                            .errorMessage(ErrorMessage.builder()
+                                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                                    .dateError(LocalDate.now())
+                                    .message(e.getMessage())
+                                    .build())
+                            .build());
+        }
+    }
 }
